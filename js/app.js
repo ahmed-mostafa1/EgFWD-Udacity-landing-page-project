@@ -25,12 +25,17 @@
  * ----------------------------------------------------
 
 /**
-    REferences:
-        Udacity NanoDegree Professional Course
-        https://developer.mozilla.org/en-US/docs/Web/JavaScript
-        https://www.w3schools.com/js/default.asp
-        https://www.youtube.com/playlist?list=PLDoPjvoNmBAx3kiplQR_oeDqLDBUDYwVv ** Osama El-Zero **
-
+##################################################################################################
+#                                   (^_^)                                                        #
+#---REferences:                                                                                  #
+#---Udacity NanoDegree Professional Course                                                       #
+#---https://developer.mozilla.org/en-US/docs/Web/JavaScript                                      #
+#---https://www.w3schools.com/js/default.asp                                                     #
+#---https://www.youtube.com/playlist?list=PLDoPjvoNmBAx3kiplQR_oeDqLDBUDYwVv ** Osama El-Zero ** #
+#---// Thanks to you I had to Search and Eventually found the Great "IntersectionObserver"       #
+#---// https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API                #
+#                                                                                              #
+##################################################################################################
 */
 /**
  * Define Global Variables
@@ -40,8 +45,7 @@
 // Declare Navigation Bar 
 const navbar__List = document.getElementById("navbar__list");
 // Declare section
-const section = document.querySelectorAll("section");
-
+const sections = document.querySelectorAll("section");
 /**
  * End Global Variables
  * Start Helper Functions
@@ -51,13 +55,13 @@ const section = document.querySelectorAll("section");
 // NavBar Biulding Function
 function buildNavBar() {
     // For Loop through Sections
-    for (var i = 0; i < section.length; i++) {
+    for (var i = 0; i < sections.length; i++) {
         // Declare and Create "li" element
         const listLi = document.createElement('li');
         // Declare and Create "a" element
         const anchor = document.createElement('a');
         // Declare and Set "Section Name" Attrebute of "a" element
-        let sectionName = section[i].getAttribute('data-nav');
+        let sectionName = sections[i].getAttribute('data-nav');
         // Declare and Set "Section ID" Attrebute of "a" element
         let IdofSection = sectionName.replace(/\s/g, '').toLowerCase();
         // Declare and Set "href" Attrebute of "a" element
@@ -81,55 +85,48 @@ buildNavBar();
  * 
 */
 
-// Setting Active State to Section in Viewport 
-// Declare offset of Section 
-const offset = (section) => {
-    // Return value Using floor Function.
-    return Math.floor(section.getBoundingClientRect().top);
-};
 
-// Declare a function to Remove "your-active-class" from classList.
-const clearActiveClass = (section) => {
-    // Assign "Section" to Remove "your-active-class" from classList.
-    section.classList.remove('your-active-class');
-    // ReAssign background Style of the specified "Section".
-    section.style.backgroundColor = "linear-gradient(0deg,rgba(136, 203, 171, 1) 0%,rgba(0, 13, 60, 1) 100%";
-};
-// Declare a function to Add "your-active-class" to classList.
-const addActiveClass = (conditional, section) => {
-    // Conditional if to check the Section's active state.
-    if (conditional) {
-        // Assign "Section" to Add "your-active-class" to classList.
-        section.classList.add('your-active-class');
-        // ReAssign background Style of the specified "Section".
-        section.style.backgroundColor = "linear-gradient(0deg,rgba(136, 203, 171, 1) 0%,rgba(0, 13, 60, 1) 100%";
-    };
-};
+// Thanks to you I had to Search and Eventually found the Great "IntersectionObserver"
+//
+// https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API
 
-// Declare a function to Activate the specified section.
-const activeSection = () => {
-    // Using forEach Loop to iterate through Setions.
-    section.forEach(section => {
-        // Declare "offset"  to Active Section. 
-        const elementOffset = offset(section);
-        // Assigh "inviewport".
-        inviewport = () => elementOffset < 200 && elementOffset >= -200;
-        // Run the "clearActiveClass" function.
-        clearActiveClass(section);
-        // Run the "addActiveClass" function.
-        addActiveClass(inviewport(), section);
+// Declare the Function "ActiveSection"
+const ActiveSection = () => {
+    // Declare the "observer" variable as a new "IntersectionObserver" 
+    const observer = new IntersectionObserver(
+        // Declare local function with parameter "Sections" 
+        function (Sections) {
+            // Iterate through the "Sections"
+            Sections.forEach((Section) => {
+                // Checking If the Section is in intersection Area
+                if (Section.isIntersecting) {
+                    // If True then add the Class "your-active-class"
+                    Section.target.classList.add('your-active-class');
+                    
+                } else {  // If the Section is out of intersection Area then another one is active and this one is out of intersection
+                    // If false then remove the Class "your-active-class"
+                    Section.target.classList.remove('your-active-class');
+                }
+
+            });
+        },
+        {
+            // Numeric value representing percentages of the target element which are visible to the user to activate 
+            threshold: 0.6,
+        }
+    );
+    // return the "observer" to observe every "section".
+    return document.querySelectorAll("section").forEach((section) => {
+        observer.observe(section);
     });
 };
-// Declare "addEventListener" to check window scroll to run the 
-window.addEventListener('scroll', activeSection);
+// Activate the "ActiveSection" Function
+ActiveSection();
 
 // End Setting Active State 
 
 
 // Declare a function to scroll to top Using "Top" Button.
 function topFunction() {
-    // scroll to the top of the document.
     document.documentElement.scrollTop = 0;
 }
-
-
